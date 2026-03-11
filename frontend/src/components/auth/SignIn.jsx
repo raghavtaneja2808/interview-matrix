@@ -39,26 +39,26 @@ const SignIn = ({ onSwitchToSignUp }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: integrate with backend auth
-    console.log("Sign in:", { email, password, rememberMe });
+    navigate("/dashboard");
   };
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold text-[#111111] tracking-tight">Welcome back</h2>
-        <p className="text-[#777777] text-sm mt-1">Please enter your details to sign in.</p>
+        <h2 className="text-2xl font-bold text-ink tracking-tight">Welcome back</h2>
+        <p className="text-ink-faint text-sm mt-1">Please enter your details to sign in.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Email */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[#333333]">Email Address</label>
+          <label className="text-sm font-medium text-ink-secondary">Email Address</label>
           <input
             type="email"
             placeholder="name@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-11 px-4 rounded-lg border border-[#e0e0e0] bg-white text-sm text-[#111111] placeholder:text-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#e8621a]/30 focus:border-[#e8621a] transition-all"
+            className="w-full h-11 px-4 rounded-lg border border-border bg-surface text-sm text-ink placeholder:text-ink-placeholder focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
             required
           />
         </div>
@@ -66,10 +66,10 @@ const SignIn = ({ onSwitchToSignUp }) => {
         {/* Password */}
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-[#333333]">Password</label>
+            <label className="text-sm font-medium text-ink-secondary">Password</label>
             <button
               type="button"
-              className="text-sm font-medium text-[#e8621a] hover:text-[#c54e12] transition-colors"
+              className="text-sm font-medium text-accent hover:text-accent-dark transition-colors"
             >
               Forgot password?
             </button>
@@ -80,13 +80,13 @@ const SignIn = ({ onSwitchToSignUp }) => {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full h-11 px-4 pr-11 rounded-lg border border-[#e0e0e0] bg-white text-sm text-[#111111] placeholder:text-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#e8621a]/30 focus:border-[#e8621a] transition-all"
+              className="w-full h-11 px-4 pr-11 rounded-lg border border-border bg-surface text-sm text-ink placeholder:text-ink-placeholder focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#aaaaaa] hover:text-[#666666] transition-colors"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-placeholder hover:text-ink-muted transition-colors"
             >
               <EyeIcon open={showPassword} />
             </button>
@@ -104,7 +104,7 @@ const SignIn = ({ onSwitchToSignUp }) => {
             />
             <div
               className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                rememberMe ? "bg-[#111111] border-[#111111]" : "border-[#cccccc] bg-white"
+                rememberMe ? "bg-ink border-ink" : "border-border bg-surface"
               }`}
             >
               {rememberMe && (
@@ -114,13 +114,13 @@ const SignIn = ({ onSwitchToSignUp }) => {
               )}
             </div>
           </div>
-          <span className="text-sm text-[#555555]">Remember me for 30 days</span>
+          <span className="text-sm text-ink-muted">Remember me for 30 days</span>
         </label>
 
         {/* Submit */}
         <button
           type="submit"
-          className="w-full h-12 rounded-lg bg-[#111111] hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1"
+          className="w-full h-12 rounded-lg bg-ink hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1"
         >
           Sign In
         </button>
@@ -128,30 +128,30 @@ const SignIn = ({ onSwitchToSignUp }) => {
 
       {/* Divider */}
       <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-[#eeeeee]" />
-        <span className="text-xs text-[#aaaaaa] font-medium tracking-widest uppercase">Or continue with</span>
-        <div className="flex-1 h-px bg-[#eeeeee]" />
+        <div className="flex-1 h-px bg-border-faint" />
+        <span className="text-xs text-ink-placeholder font-medium tracking-widest uppercase">Or continue with</span>
+        <div className="flex-1 h-px bg-border-faint" />
       </div>
 
       {/* Social */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-[#e0e0e0] bg-white hover:bg-[#fafafa] text-sm font-medium text-[#333333] transition-colors duration-200">
+        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-border bg-surface hover:bg-surface-muted text-sm font-medium text-ink-secondary transition-colors duration-200">
           <GoogleIcon />
           Google
         </button>
-        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-[#e0e0e0] bg-white hover:bg-[#fafafa] text-sm font-medium text-[#333333] transition-colors duration-200">
+        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-border bg-surface hover:bg-surface-muted text-sm font-medium text-ink-secondary transition-colors duration-200">
           <LinkedInIcon />
           LinkedIn
         </button>
       </div>
 
       {/* Switch to signup */}
-      <p className="text-center text-sm text-[#777777]">
+      <p className="text-center text-sm text-ink-faint">
         Don&apos;t have an account?{" "}
         <button
           type="button"
           onClick={onSwitchToSignUp}
-          className="font-semibold text-[#e8621a] hover:text-[#c54e12] transition-colors"
+          className="font-semibold text-accent hover:text-accent-dark transition-colors"
         >
           Sign up for free
         </button>

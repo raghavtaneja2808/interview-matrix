@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, animate } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 
 /* ── Animated counter ───────────────────────────────────── */
 
@@ -8,14 +8,19 @@ const CountUp = ({ target, active }) => {
 
   useEffect(() => {
     if (!active || !ref.current) return;
-    const ctrl = animate(0, target, {
-      duration: 1.2,
-      ease: "easeOut",
-      onUpdate: (v) => {
-        if (ref.current) ref.current.textContent = Math.round(v);
-      },
-    });
-    return () => ctrl.stop();
+    const duration = 1200; // ms
+    const start = performance.now();
+    let rafId;
+    const step = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // easeOut curve
+      const eased = 1 - Math.pow(1 - progress, 3);
+      if (ref.current) ref.current.textContent = Math.round(eased * target);
+      if (progress < 1) rafId = requestAnimationFrame(step);
+    };
+    rafId = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(rafId);
   }, [active, target]);
 
   return <span ref={ref}>0</span>;

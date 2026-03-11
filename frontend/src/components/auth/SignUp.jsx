@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -34,64 +35,65 @@ const SignUp = ({ onSwitchToSignIn }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // TODO: integrate with backend auth
-    console.log("Sign up:", { name, email, password, agreed });
+    navigate("/dashboard");
   };
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-2xl font-bold text-[#111111] tracking-tight">Create your account</h2>
-        <p className="text-[#777777] text-sm mt-1">Start practicing interviews for free today.</p>
+        <h2 className="text-2xl font-bold text-ink tracking-tight">Create your account</h2>
+        <p className="text-ink-faint text-sm mt-1">Start practicing interviews for free today.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Full Name */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[#333333]">Full Name</label>
+          <label className="text-sm font-medium text-ink-secondary">Full Name</label>
           <input
             type="text"
             placeholder="Jane Smith"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full h-11 px-4 rounded-lg border border-[#e0e0e0] bg-white text-sm text-[#111111] placeholder:text-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#e8621a]/30 focus:border-[#e8621a] transition-all"
+            className="w-full h-11 px-4 rounded-lg border border-border bg-surface text-sm text-ink placeholder:text-ink-placeholder focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
             required
           />
         </div>
 
         {/* Email */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[#333333]">Email Address</label>
+          <label className="text-sm font-medium text-ink-secondary">Email Address</label>
           <input
             type="email"
             placeholder="name@company.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full h-11 px-4 rounded-lg border border-[#e0e0e0] bg-white text-sm text-[#111111] placeholder:text-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#e8621a]/30 focus:border-[#e8621a] transition-all"
+            className="w-full h-11 px-4 rounded-lg border border-border bg-surface text-sm text-ink placeholder:text-ink-placeholder focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
             required
           />
         </div>
 
         {/* Password */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-[#333333]">Password</label>
+          <label className="text-sm font-medium text-ink-secondary">Password</label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               placeholder="At least 8 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full h-11 px-4 pr-11 rounded-lg border border-[#e0e0e0] bg-white text-sm text-[#111111] placeholder:text-[#aaaaaa] focus:outline-none focus:ring-2 focus:ring-[#e8621a]/30 focus:border-[#e8621a] transition-all"
+              className="w-full h-11 px-4 pr-11 rounded-lg border border-border bg-surface text-sm text-ink placeholder:text-ink-placeholder focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
               required
               minLength={8}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#aaaaaa] hover:text-[#666666] transition-colors"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-ink-placeholder hover:text-ink-muted transition-colors"
             >
               <EyeIcon open={showPassword} />
             </button>
@@ -104,7 +106,7 @@ const SignUp = ({ onSwitchToSignIn }) => {
                   className={`h-1 flex-1 rounded-full transition-all duration-300 ${
                     password.length >= threshold
                       ? i === 0 ? "bg-red-400" : i === 1 ? "bg-yellow-400" : "bg-green-400"
-                      : "bg-[#eeeeee]"
+                      : "bg-border-faint"
                   }`}
                 />
               ))}
@@ -123,7 +125,7 @@ const SignUp = ({ onSwitchToSignIn }) => {
             />
             <div
               className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                agreed ? "bg-[#111111] border-[#111111]" : "border-[#cccccc] bg-white"
+                agreed ? "bg-ink border-ink" : "border-border bg-surface"
               }`}
             >
               {agreed && (
@@ -133,18 +135,18 @@ const SignUp = ({ onSwitchToSignIn }) => {
               )}
             </div>
           </div>
-          <span className="text-sm text-[#555555] leading-snug">
+          <span className="text-sm text-ink-muted leading-snug">
             I agree to the{" "}
-            <a href="#" className="text-[#e8621a] hover:text-[#c54e12] font-medium">Terms of Service</a>
+            <a href="#" className="text-accent hover:text-accent-dark font-medium">Terms of Service</a>
             {" "}and{" "}
-            <a href="#" className="text-[#e8621a] hover:text-[#c54e12] font-medium">Privacy Policy</a>
+            <a href="#" className="text-accent hover:text-accent-dark font-medium">Privacy Policy</a>
           </span>
         </label>
 
         {/* Submit */}
         <button
           type="submit"
-          className="w-full h-12 rounded-lg bg-[#111111] hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1"
+          className="w-full h-12 rounded-lg bg-ink hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1"
         >
           Create Account
         </button>
@@ -152,30 +154,30 @@ const SignUp = ({ onSwitchToSignIn }) => {
 
       {/* Divider */}
       <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-[#eeeeee]" />
-        <span className="text-xs text-[#aaaaaa] font-medium tracking-widest uppercase">Or continue with</span>
-        <div className="flex-1 h-px bg-[#eeeeee]" />
+        <div className="flex-1 h-px bg-border-faint" />
+        <span className="text-xs text-ink-placeholder font-medium tracking-widest uppercase">Or continue with</span>
+        <div className="flex-1 h-px bg-border-faint" />
       </div>
 
       {/* Social */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-[#e0e0e0] bg-white hover:bg-[#fafafa] text-sm font-medium text-[#333333] transition-colors duration-200">
+        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-border bg-surface hover:bg-surface-muted text-sm font-medium text-ink-secondary transition-colors duration-200">
           <GoogleIcon />
           Google
         </button>
-        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-[#e0e0e0] bg-white hover:bg-[#fafafa] text-sm font-medium text-[#333333] transition-colors duration-200">
+        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-border bg-surface hover:bg-surface-muted text-sm font-medium text-ink-secondary transition-colors duration-200">
           <LinkedInIcon />
           LinkedIn
         </button>
       </div>
 
       {/* Switch to sign in */}
-      <p className="text-center text-sm text-[#777777]">
+      <p className="text-center text-sm text-ink-faint">
         Already have an account?{" "}
         <button
           type="button"
           onClick={onSwitchToSignIn}
-          className="font-semibold text-[#e8621a] hover:text-[#c54e12] transition-colors"
+          className="font-semibold text-accent hover:text-accent-dark transition-colors"
         >
           Sign in
         </button>
