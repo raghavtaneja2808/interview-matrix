@@ -9,7 +9,7 @@ const Navbar = () => {
         <a href="#features" className="text-[15px] text-[#555555] hover:text-[#111111] transition-colors duration-200">Features</a>
         <a href="#pricing" className="text-[15px] text-[#555555] hover:text-[#111111] transition-colors duration-200">Pricing</a>
       </div>
-      <button className="flex items-center justify-center rounded-lg h-12 px-6 bg-[#111111] hover:bg-black transition-colors duration-200 text-white text-[15px] font-medium tracking-wide cursor-pointer">
+      <button className="flex items-center justify-center rounded-lg h-12 px-6 bg-[#e8621a] hover:bg-[#d15516] transition-colors duration-200 text-white text-[15px] font-medium tracking-wide cursor-pointer">
         <span>Get Access</span>
       </button>
     </nav>
