@@ -1,16 +1,47 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0d69f2;
+  /* ── Brand Colors ── */
+  --color-primary: #0d69f2;         /* text-primary        | Accent blue (links, focus rings) */
+  --color-accent: #e8621a;          /* text-accent         | Burnt orange CTA + highlights    */
+  --color-accent-dark: #c54e12;     /* text-accent-dark    | Hover state for accent           */
+
+  /* ── Neutrals ── */
+  --color-ink: #111111;             /* text-ink            | Primary text / headings          */
+  --color-ink-secondary: #333333;   /* text-ink-secondary  | Label text                       */
+  --color-ink-muted: #555555;       /* text-ink-muted      | Nav links / body copy            */
+  --color-ink-subtle: #666666;      /* text-ink-subtle     | Paragraph text in panels         */
+  --color-ink-faint: #777777;       /* text-ink-faint      | Subheadings / captions           */
+  --color-ink-placeholder: #aaaaaa; /* text-ink-placeholder| Input placeholders               */
+  --color-ink-disabled: #999999;    /* text-ink-disabled   | Inactive tab labels              */
+  --color-ink-ghost: #888888;       /* text-ink-ghost      | Footer links                     */
+
+  /* ── Surface Colors ── */
+  --color-surface: #ffffff;         /* bg-surface          | Card / form background (white)   */
+  --color-surface-raised: #f9f8f6;  /* bg-surface-raised   | Right panel background           */
+  --color-surface-muted: #f5f4f2;   /* bg-surface-muted    | Page background                  */
+  --color-surface-warm: #e0dbd5;    /* bg-surface-warm     | Avatar / placeholder bg          */
   --color-background-light: #ffffff;
   --color-background-dark: #101722;
+
+  /* ── Border Colors ── */
+  --color-border: #e0e0e0;          /* border-border       | Input & card borders             */
+  --color-border-light: #ebebeb;    /* border-border-light | Dividers / tab separators        */
+  --color-border-faint: #eeeeee;    /* border-border-faint | Dividers inside forms            */
+
+  /* ── Feedback / Status ── */
+  --color-success: #22c55e;         /* text-success        | Clarity metric bar               */
+  --color-info: #0d69f2;            /* text-info           | Confidence metric bar            */
+  --color-purple: #a855f7;          /* text-purple         | Structure metric bar             */
+
+  /* ── Fonts ── */
   --font-display: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
 }
 
 body {
   background-color: var(--color-background-light);
-  color: #111111;
+  color: var(--color-ink);
   overflow-x: hidden;
 }
 
@@ -49,4 +80,9 @@ body {
 
 .animate-blob-delay {
   animation: blob 7s infinite 2s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

@@ -1,3 +1,5 @@
+import PageTransition from "../common/PageTransition";
+
 const TOOLS = [
   {
     title: "AI Resume Builder",
@@ -52,11 +54,13 @@ const Toolkit = () => {
             We help job seekers get a job quicker
           </h3>
 
-          <button className="bg-[#e8621a] text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-[#d15516] transition-all hover:-translate-y-1 active:scale-95 cursor-pointer"
+          <PageTransition
+            to="/auth"
+            className="bg-[#e8621a] text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-[#d15516] transition-all hover:-translate-y-1 active:scale-95 cursor-pointer"
             style={{ boxShadow: "0 8px 20px -4px rgba(232, 98, 26, 0.35)" }}
           >
             Start now
-          </button>
+          </PageTransition>
         </div>
       </div>
     </section>
