@@ -70,12 +70,12 @@ const Auth = () => {
 
               {/* Features */}
               <ul className="flex flex-col gap-4">
-                {FEATURES.map(({ Icon, label }) => (
-                  <li key={label} className="flex items-center gap-4">
+                {FEATURES.map((feature) => (
+                  <li key={feature.label} className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-[#e8621a]/10 flex items-center justify-center text-[#e8621a] flex-shrink-0">
-                      <Icon />
+                      <feature.Icon />
                     </div>
-                    <span className="text-[15px] text-[#333333] font-medium">{label}</span>
+                    <span className="text-[15px] text-[#333333] font-medium">{feature.label}</span>
                   </li>
                 ))}
               </ul>
