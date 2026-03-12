@@ -126,6 +126,7 @@ const SectionTitle = ({ icon, title, tone = "default" }) => (
 );
 
 const Review = () => {
+  const name = JSON.parse(localStorage.getItem("user")).name;
   return (
     <div className="min-h-screen bg-[#f6f4f2] text-ink">
       <AppTopNav />
@@ -137,7 +138,7 @@ const Review = () => {
               <span>History</span>
               <span className="text-accent">Review</span>
             </div>
-            <h1 className="text-[44px] font-black tracking-tight text-ink sm:text-[56px]">Alex Johnson</h1>
+            <h1 className="text-[44px] font-black tracking-tight text-ink sm:text-[56px]">{name}</h1>
             <p className="mt-1 text-[16px] italic text-ink-muted">
               Senior Product Designer Interview · Oct 24, 2023
             </p>
@@ -260,7 +261,7 @@ const Review = () => {
             />
             <article className="rounded-[18px] border border-[#f0d8ca] bg-[#fff8f4] p-6 shadow-[0_10px_24px_rgba(17,17,17,0.04)]">
               <p className="text-[15px] leading-8 text-ink-secondary">
-                Overall, Alex, your interview was highly professional. You demonstrated significant depth in design
+                Overall, {name}, your interview was highly professional. You demonstrated significant depth in design
                 systems and accessibility. However, your response speed for the behavioral questions was slightly
                 delayed, suggesting a need for more muscle memory with your "career stories." We recommend focusing on
                 the STAR method to structure your narratives more clearly. Your use of industry terminology was spot-on,
@@ -356,14 +357,12 @@ const Review = () => {
                   </div>
 
                   <div
-                    className={`mt-4 rounded-2xl px-4 py-3 ${
-                      isStrong ? "bg-[#e6f4ea]" : "bg-[#fff2ea]"
-                    }`}
+                    className={`mt-4 rounded-2xl px-4 py-3 ${isStrong ? "bg-[#e6f4ea]" : "bg-[#fff2ea]"
+                      }`}
                   >
                     <p
-                      className={`text-[11px] font-black uppercase tracking-[0.18em] ${
-                        isStrong ? "text-[#2d9f5b]" : "text-accent"
-                      }`}
+                      className={`text-[11px] font-black uppercase tracking-[0.18em] ${isStrong ? "text-[#2d9f5b]" : "text-accent"
+                        }`}
                     >
                       {item.feedbackLabel}
                     </p>

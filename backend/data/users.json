@@ -5,5 +5,12 @@
     "email": "raghavtaneja695@gmail.com",
     "password": "$2b$10$trA/VNDuQgBnTWtrFNf4nOK/KIbxFcwjSQB1d0lXAww2hJOQFJB4a",
     "createdAt": "2026-03-12T11:07:32.103Z"
+  },
+  {
+    "id": "1773317445439",
+    "name": "raghav Gupta",
+    "email": "guptaraghav284@gmail.com",
+    "password": "$2b$10$52UREig.7gBaJl/plWeA8.C3jSlo3P8H3W5Ckc9coa6iBqAQTNUlq",
+    "createdAt": "2026-03-12T12:10:45.439Z"
   }
 ]

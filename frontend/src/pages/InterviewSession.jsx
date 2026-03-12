@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-/* ══════════════════════════════════════════════════
-   SIDEBAR ICONS
-══════════════════════════════════════════════════ */
 const GridIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
     <rect x="3" y="3" width="7" height="7" rx="1.5"/>
@@ -31,10 +28,6 @@ const BarChartIcon = () => (
     <line x1="6" y1="20" x2="6" y2="14"/>
   </svg>
 );
-
-/* ══════════════════════════════════════════════════
-   CONTROL BAR ICONS
-══════════════════════════════════════════════════ */
 const MicIcon = () => (
   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -61,14 +54,7 @@ const SettingsIcon = () => (
   </svg>
 );
 
-/* ══════════════════════════════════════════════════
-   MOCK DATA
-══════════════════════════════════════════════════ */
-const SESSION = {
-  role: "Senior Software Engineer",
-  company: "Apple Inc.",
-  totalQuestions: 10,
-};
+const SESSION = { role: "Senior Software Engineer", company: "Apple Inc.", totalQuestions: 10 };
 
 const QUESTIONS = [
   {
@@ -93,9 +79,6 @@ const QUESTIONS = [
 
 const KEYWORDS = ["Design Systems", "Accessibility", "Stakeholders", "WCAG 2.1"];
 
-/* ══════════════════════════════════════════════════
-   ANIMATED METRIC BAR
-══════════════════════════════════════════════════ */
 const MetricBar = ({ value, max = 100, color }) => {
   const [w, setW] = useState(0);
   const ref = useRef(null);
@@ -106,50 +89,30 @@ const MetricBar = ({ value, max = 100, color }) => {
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, [value, max]);
-
   return (
     <div ref={ref} className="h-[5px] rounded-full bg-surface-muted overflow-hidden">
-      <div
-        className="h-full rounded-full transition-all duration-700 ease-out"
-        style={{ width: `${w}%`, backgroundColor: color }}
-      />
+      <div className="h-full rounded-full transition-all duration-700 ease-out" style={{ width: `${w}%`, backgroundColor: color }} />
     </div>
   );
 };
 
-/* ══════════════════════════════════════════════════
-   AI WAVEFORM
-══════════════════════════════════════════════════ */
 const Waveform = ({ active }) => {
   const bars = [3, 7, 5, 10, 6, 8, 4, 9, 5, 7, 3, 8, 6, 10, 4, 7, 5, 9, 3, 6, 4, 8, 5, 10];
   return (
     <div className="flex items-center gap-[4px] h-12 w-full justify-center">
       {bars.map((h, i) => (
-        <div
-          key={i}
-          className="w-[5px] rounded-full"
-          style={{
-            height: `${h * 4}px`,
-            backgroundColor: "#e8621a",
-            opacity: active ? 1 : 0.3,
-            animation: active ? `pulse ${0.6 + (i % 4) * 0.15}s ease-in-out infinite alternate` : "none",
-            animationDelay: `${i * 0.05}s`,
-          }}
-        />
+        <div key={i} className="w-[5px] rounded-full" style={{
+          height: `${h * 4}px`, backgroundColor: "#e8621a",
+          opacity: active ? 1 : 0.3,
+          animation: active ? `wfpulse ${0.6 + (i % 4) * 0.15}s ease-in-out infinite alternate` : "none",
+          animationDelay: `${i * 0.05}s`,
+        }} />
       ))}
-      <style>{`
-        @keyframes pulse {
-          from { transform: scaleY(0.4); }
-          to   { transform: scaleY(1); }
-        }
-      `}</style>
+      <style>{`@keyframes wfpulse { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }`}</style>
     </div>
   );
 };
 
-/* ══════════════════════════════════════════════════
-   INTERVIEW SESSION PAGE
-══════════════════════════════════════════════════ */
 const InterviewSession = () => {
   const navigate = useNavigate();
   const [response, setResponse] = useState("");
@@ -164,8 +127,7 @@ const InterviewSession = () => {
     return () => clearInterval(id);
   }, [paused]);
 
-  const fmt = (s) =>
-    `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  const fmt = (s) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -193,15 +155,10 @@ const InterviewSession = () => {
           ].map(({ icon, label, path }) => {
             const active = label === "Dashboard";
             return (
-              <button
-                key={label}
-                onClick={() => navigate(path)}
+              <button key={label} onClick={() => navigate(path)}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13.5px] font-medium transition-all w-full text-left ${
-                  active
-                    ? "bg-accent/10 text-accent"
-                    : "text-ink-muted hover:bg-surface-muted hover:text-ink"
-                }`}
-              >
+                  active ? "bg-accent/10 text-accent" : "text-ink-muted hover:bg-surface-muted hover:text-ink"
+                }`}>
                 <span className={active ? "text-accent" : "text-ink-muted/60"}>{icon}</span>
                 {label}
               </button>
@@ -221,22 +178,18 @@ const InterviewSession = () => {
         </div>
       </aside>
 
-      {/* ══ CENTRE — Q&A + Controls ══ */}
+      {/* ══ CENTRE ══ */}
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Session header */}
         <div className="flex-shrink-0 px-8 py-4 bg-surface border-b border-border-light flex items-center justify-between">
           <div>
-            <p className="text-[10.5px] font-black tracking-[0.18em] uppercase text-ink-placeholder mb-0.5">
-              Active Session
-            </p>
-            <h1 className="text-[19px] font-black text-ink tracking-tight">
-              {SESSION.role} — {SESSION.company}
-            </h1>
+            <p className="text-[10.5px] font-black tracking-[0.18em] uppercase text-ink-placeholder mb-0.5">Active Session</p>
+            <h1 className="text-[19px] font-black text-ink tracking-tight">{SESSION.role} — {SESSION.company}</h1>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 border border-green-200">
-            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-            <span className="text-[11px] font-black tracking-widest uppercase text-red-600">Recording</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200">
+            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-[11px] font-black tracking-widest uppercase text-green-600">Live Analysis</span>
           </div>
         </div>
 
@@ -244,22 +197,14 @@ const InterviewSession = () => {
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-8 py-6 flex flex-col gap-8">
           {QUESTIONS.map((q) => (
             <div key={q.id} className={q.done ? "opacity-55" : ""}>
-              <p className={`text-[10.5px] font-black tracking-[0.18em] uppercase mb-3 ${
-                q.done ? "text-ink-placeholder" : "text-accent"
-              }`}>
+              <p className={`text-[10.5px] font-black tracking-[0.18em] uppercase mb-3 ${q.done ? "text-ink-placeholder" : "text-accent"}`}>
                 Question {q.id}
               </p>
-              <p className={`font-black tracking-tight leading-tight mb-4 ${
-                q.done
-                  ? "text-[17px] text-ink-secondary italic"
-                  : "text-[27px] text-ink"
-              }`}>
+              <p className={`font-black tracking-tight leading-tight mb-4 ${q.done ? "text-[17px] text-ink-secondary italic" : "text-[27px] text-ink"}`}>
                 {q.text}
               </p>
               {q.answer && (
-                <p className="text-[13.5px] text-ink-muted italic leading-relaxed pl-4 border-l-2 border-border">
-                  {q.answer}
-                </p>
+                <p className="text-[13.5px] text-ink-muted italic leading-relaxed pl-4 border-l-2 border-border">{q.answer}</p>
               )}
             </div>
           ))}
@@ -302,9 +247,7 @@ const InterviewSession = () => {
               className="w-10 h-10 rounded-full border-2 border-border flex items-center justify-center text-ink-muted hover:border-accent hover:text-accent transition-all"
             >
               {paused ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <polygon points="5 3 19 12 5 21 5 3"/>
-                </svg>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
               ) : (
                 <PauseIcon />
               )}
@@ -313,9 +256,7 @@ const InterviewSession = () => {
             <button
               onClick={() => setMicActive((m) => !m)}
               className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-all duration-200 ${
-                micActive
-                  ? "bg-accent hover:bg-accent-dark scale-105"
-                  : "bg-ink-muted hover:bg-ink-secondary"
+                micActive ? "bg-accent hover:bg-accent-dark scale-105" : "bg-ink-muted hover:bg-ink-secondary"
               }`}
             >
               <MicIcon />
@@ -333,8 +274,9 @@ const InterviewSession = () => {
             Settings
           </button>
 
+          {/* ✅ End Session → navigates to /review */}
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/review")}
             className="px-5 py-2.5 rounded-xl bg-ink text-white text-[13px] font-black tracking-wide hover:bg-ink-secondary transition-colors"
           >
             End<br />Session
@@ -342,7 +284,7 @@ const InterviewSession = () => {
         </div>
       </div>
 
-      {/* ══ RIGHT PANEL — Session Insights — 440px ══ */}
+      {/* ══ RIGHT PANEL — 440px ══ */}
       <aside className="w-[440px] flex-shrink-0 bg-surface border-l border-border-light flex flex-col overflow-y-auto">
         <div className="px-9 pt-6 pb-4 border-b border-border-light">
           <h2 className="text-[20px] font-black text-ink">Session Insights</h2>
@@ -351,13 +293,10 @@ const InterviewSession = () => {
 
         <div className="flex-1 px-9 py-6 flex flex-col gap-6">
 
-          {/* Tone & Confidence */}
           <div className="bg-surface-muted rounded-xl p-5">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10.5px] font-black tracking-[0.14em] uppercase text-ink-placeholder">Tone &amp; Confidence</span>
-              <span className="text-[22px] font-black text-ink leading-none">
-                85<span className="text-[13px] font-bold text-ink-muted">/100</span>
-              </span>
+              <span className="text-[22px] font-black text-ink leading-none">85<span className="text-[13px] font-bold text-ink-muted">/100</span></span>
             </div>
             <MetricBar value={85} color="#e8621a" />
             <p className="text-[10.5px] font-bold tracking-widest uppercase text-ink-placeholder mt-2">
@@ -365,13 +304,10 @@ const InterviewSession = () => {
             </p>
           </div>
 
-          {/* Technical Depth */}
           <div className="bg-surface-muted rounded-xl p-5">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10.5px] font-black tracking-[0.14em] uppercase text-ink-placeholder">Technical Depth</span>
-              <span className="text-[22px] font-black text-ink leading-none">
-                72<span className="text-[13px] font-bold text-ink-muted">/100</span>
-              </span>
+              <span className="text-[22px] font-black text-ink leading-none">72<span className="text-[13px] font-bold text-ink-muted">/100</span></span>
             </div>
             <MetricBar value={72} color="#e8621a" />
             <p className="text-[10.5px] font-bold tracking-widest uppercase text-ink-placeholder mt-2">
@@ -379,7 +315,6 @@ const InterviewSession = () => {
             </p>
           </div>
 
-          {/* Pacing */}
           <div className="bg-surface-muted rounded-xl p-5">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10.5px] font-black tracking-[0.14em] uppercase text-ink-placeholder">Pacing</span>
@@ -393,17 +328,11 @@ const InterviewSession = () => {
 
           <div className="border-t border-border-faint" />
 
-          {/* Keywords Detected */}
           <div>
-            <p className="text-[10.5px] font-black tracking-[0.14em] uppercase text-ink-placeholder mb-3">
-              Keywords Detected
-            </p>
+            <p className="text-[10.5px] font-black tracking-[0.14em] uppercase text-ink-placeholder mb-3">Keywords Detected</p>
             <div className="flex flex-wrap gap-2">
               {KEYWORDS.map((kw) => (
-                <span
-                  key={kw}
-                  className="px-3 py-1.5 rounded-full text-[12px] font-semibold border border-border text-ink-secondary bg-surface-muted"
-                >
+                <span key={kw} className="px-3 py-1.5 rounded-full text-[12px] font-semibold border border-border text-ink-secondary bg-surface-muted">
                   {kw}
                 </span>
               ))}
@@ -412,13 +341,10 @@ const InterviewSession = () => {
 
           <div className="border-t border-border-faint" />
 
-          {/* AI Waveform */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-              <p className="text-[10.5px] font-black tracking-[0.14em] uppercase text-accent">
-                AI Waveform
-              </p>
+              <p className="text-[10.5px] font-black tracking-[0.14em] uppercase text-accent">AI Waveform</p>
             </div>
             <div className="bg-surface-muted rounded-xl px-6 py-5 flex items-center justify-center">
               <Waveform active={micActive && !paused} />
