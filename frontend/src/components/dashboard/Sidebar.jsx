@@ -42,7 +42,7 @@ const ZapIcon = () => (
 const NAV_ITEMS = [
   { to: "/dashboard",           icon: <GridIcon />,    label: "Dashboard" },
   { to: "/dashboard/interview", icon: <PlayIcon />,    label: "Start Interview" },
-  { to: "/dashboard/previous",  icon: <HistoryIcon />, label: "Previous Interviews" },
+  { to: "/review",              icon: <HistoryIcon />, label: "Review" },
   { to: "/dashboard/library",   icon: <LibraryIcon />, label: "Practice Library" },
 ];
 

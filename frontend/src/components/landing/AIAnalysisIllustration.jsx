@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView } from "framer-motion";
+import { useInView, motion as Motion } from "framer-motion";
 
 /* ── Animated counter ───────────────────────────────────── */
 
@@ -31,7 +31,7 @@ const CountUp = ({ target, active }) => {
 const AnalyzingDots = () => (
   <span className="inline-flex gap-1 ml-1">
     {[0, 1, 2].map((i) => (
-      <motion.span
+      <Motion.span
         key={i}
         className="w-1.5 h-1.5 rounded-full bg-[#e8621a]"
         animate={{ opacity: [0.2, 1, 0.2] }}
@@ -55,7 +55,7 @@ const SCORES = [
 ];
 
 const ScoreBar = ({ label, value, active, delay }) => (
-  <motion.div
+  <Motion.div
     className="flex flex-col gap-2"
     initial={{ opacity: 0, y: 10 }}
     animate={active ? { opacity: 1, y: 0 } : {}}
@@ -68,14 +68,14 @@ const ScoreBar = ({ label, value, active, delay }) => (
       </span>
     </div>
     <div className="h-2 rounded-full bg-[#f0f0f0] overflow-hidden">
-      <motion.div
+      <Motion.div
         className="h-full rounded-full bg-[#e8621a]"
         initial={{ width: 0 }}
         animate={active ? { width: `${value}%` } : {}}
         transition={{ duration: 1.2, delay, ease: "easeOut" }}
       />
     </div>
-  </motion.div>
+  </Motion.div>
 );
 
 /* ── Main component ─────────────────────────────────────── */
@@ -116,7 +116,7 @@ const AIAnalysisIllustration = () => {
         {/* Illustration */}
         <div className="w-full max-w-[520px] flex flex-col items-center gap-8">
           {/* Step 1 — Answer bubble */}
-          <motion.div
+          <Motion.div
             className="w-full rounded-lg border border-[#e5e5e5] bg-white px-6 py-5 text-left"
             style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}
             initial={{ opacity: 0, y: 16 }}
@@ -127,10 +127,10 @@ const AIAnalysisIllustration = () => {
               &ldquo;I improved API response time by 60% by optimizing database
               queries.&rdquo;
             </p>
-          </motion.div>
+          </Motion.div>
 
           {/* Step 2 — Analyzing indicator */}
-          <motion.div
+          <Motion.div
             className="flex items-center gap-1"
             initial={{ opacity: 0 }}
             animate={step >= 2 ? { opacity: 1 } : {}}
@@ -140,7 +140,7 @@ const AIAnalysisIllustration = () => {
               Analyzing response
             </span>
             <AnalyzingDots />
-          </motion.div>
+          </Motion.div>
 
           {/* Step 3 — Score bars */}
           <div className="w-full flex flex-col gap-5">
@@ -156,7 +156,7 @@ const AIAnalysisIllustration = () => {
           </div>
 
           {/* Step 4 — AI Insight card */}
-          <motion.div
+          <Motion.div
             className="w-full rounded-xl border border-[#e5e5e5] bg-white px-6 py-5 text-left"
             style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.05)" }}
             initial={{ opacity: 0, y: 20 }}
@@ -171,7 +171,7 @@ const AIAnalysisIllustration = () => {
               <br />
               Consider adding measurable business impact.
             </p>
-          </motion.div>
+          </Motion.div>
         </div>
       </div>
     </section>

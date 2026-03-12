@@ -20,7 +20,7 @@ const Categories = () => {
           {CATEGORIES.map((cat) => (
             <span
               key={cat}
-              className="px-6 py-3 rounded-full bg-[#f3f3f3] text-[#111111] text-[15px] font-medium"
+              className="px-6 py-3 rounded-full bg-[#f3f3f3] hover:bg-[#f7f7f7] text-[#111111] text-[15px] font-medium"
             >
               {cat}
             </span>
