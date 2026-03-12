@@ -1,10 +1,24 @@
 // ── User ──────────────────────────────────────────────
-export const defaultUser = {
-  name: "Raghav",
-  targetRole: "Frontend Developer",
-  lastInterview: "Yesterday",
-  level: "Level 4 Candidate",
-};
+export function getUser() {
+  try {
+    const stored = JSON.parse(localStorage.getItem("user"));
+    return {
+      name: stored?.name?.split(" ")[0] || "User",
+      email: stored?.email || "",
+      targetRole: "Frontend Developer",
+      lastInterview: "Yesterday",
+      level: "Level 4 Candidate",
+    };
+  } catch {
+    return {
+      name: "User",
+      email: "",
+      targetRole: "Frontend Developer",
+      lastInterview: "Yesterday",
+      level: "Level 4 Candidate",
+    };
+  }
+}
 
 // ── Stat cards ────────────────────────────────────────
 export const stats = [

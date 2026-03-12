@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import Sidebar from "../components/dashboard/Sidebar";
 import TopBar from "../components/dashboard/TopBar";
 import {
-  defaultUser,
+  getUser,
   stats,
   performance,
   focusAreas,
@@ -164,6 +164,8 @@ const SkillRow = ({ label, value, max = 10 }) => {
    DASHBOARD
 ═══════════════════════════════════════════════════ */
 const Dashboard = () => {
+  const user = getUser();
+
   return (
     <div className="min-h-screen bg-surface-muted">
       <Sidebar />
@@ -175,19 +177,19 @@ const Dashboard = () => {
           {/* ── Welcome ── */}
           <div className="mb-6">
             <h1 className="text-[28px] font-black text-ink tracking-tight leading-tight mb-2">
-              Welcome back, {defaultUser.name}
+              Welcome back, {user.name}
             </h1>
             <div className="flex flex-wrap items-center gap-4">
               <span className="flex items-center gap-1.5 text-[12.5px] text-ink-muted font-medium">
-                <CodeChipIcon /> Target: {defaultUser.targetRole}
+                <CodeChipIcon /> Target: {user.targetRole}
               </span>
               <span className="w-px h-3 bg-border" />
               <span className="flex items-center gap-1.5 text-[12.5px] text-ink-muted font-medium">
-                <CalendarIcon /> Last Interview: {defaultUser.lastInterview}
+                <CalendarIcon /> Last Interview: {user.lastInterview}
               </span>
               <span className="w-px h-3 bg-border" />
               <span className="flex items-center gap-1.5 text-[12.5px] text-ink-muted font-medium">
-                <FireIcon /> {defaultUser.level}
+                <FireIcon /> {user.level}
               </span>
             </div>
           </div>

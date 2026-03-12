@@ -88,10 +88,23 @@ const Sidebar = () => {
             System
           </span>
         </div>
-        <button className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13.5px] font-medium text-ink-muted hover:bg-surface-muted hover:text-ink transition-all w-full text-left">
-          <span className="text-ink-muted/60"><SettingsIcon /></span>
-          Settings
-        </button>
+        <NavLink
+          to="/dashboard/profile"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-4 py-2.5 rounded-lg text-[13.5px] font-medium transition-all duration-150 w-full text-left ${
+              isActive
+                ? "bg-accent/10 text-accent"
+                : "text-ink-muted hover:bg-surface-muted hover:text-ink"
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              <span className={isActive ? "text-accent" : "text-ink-muted/60"}><SettingsIcon /></span>
+              Settings & Profile
+            </>
+          )}
+        </NavLink>
       </nav>
 
       {/* ── PRO PLAN card ── */}

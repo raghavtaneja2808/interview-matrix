@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import SignIn from "../components/auth/SignIn";
 import SignUp from "../components/auth/SignUp";
 
@@ -36,6 +36,14 @@ const StarIcon = () => (
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState("signin");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user?.id) navigate("/dashboard", { replace: true });
+    } catch { /* not logged in */ }
+  }, [navigate]);
 
   return (
     <div className="min-h-screen w-full bg-[#f5f4f2] flex flex-col">

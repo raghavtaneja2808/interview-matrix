@@ -35,12 +35,36 @@ const SignUp = ({ onSwitchToSignIn }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [agreed, setAgreed] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: integrate with backend auth
-    navigate("/dashboard");
+    if (!agreed) {
+      setError("Please agree to the Terms of Service and Privacy Policy.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Sign up failed.");
+        setLoading(false);
+        return;
+      }
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/dashboard");
+    } catch {
+      setError("Cannot connect to server.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,6 +73,12 @@ const SignUp = ({ onSwitchToSignIn }) => {
         <h2 className="text-2xl font-bold text-ink tracking-tight">Create your account</h2>
         <p className="text-ink-faint text-sm mt-1">Start practicing interviews for free today.</p>
       </div>
+
+      {error && (
+        <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Full Name */}
@@ -146,9 +176,10 @@ const SignUp = ({ onSwitchToSignIn }) => {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full h-12 rounded-lg bg-ink hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1"
+          className="w-full h-12 rounded-lg bg-ink hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1 disabled:opacity-50"
+          disabled={loading}
         >
-          Create Account
+          {loading ? "Creating account..." : "Create Account"}
         </button>
       </form>
 

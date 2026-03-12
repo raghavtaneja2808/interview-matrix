@@ -34,12 +34,32 @@ const SignIn = ({ onSwitchToSignUp }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: integrate with backend auth
-    navigate("/dashboard");
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Sign in failed.");
+        setLoading(false);
+        return;
+      }
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/dashboard");
+    } catch {
+      setError("Cannot connect to server.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,6 +68,12 @@ const SignIn = ({ onSwitchToSignUp }) => {
         <h2 className="text-2xl font-bold text-ink tracking-tight">Welcome back</h2>
         <p className="text-ink-faint text-sm mt-1">Please enter your details to sign in.</p>
       </div>
+
+      {error && (
+        <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+          {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Email */}
@@ -120,9 +146,10 @@ const SignIn = ({ onSwitchToSignUp }) => {
         {/* Submit */}
         <button
           type="submit"
-          className="w-full h-12 rounded-lg bg-ink hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1"
+          className="w-full h-12 rounded-lg bg-ink hover:bg-black text-white text-sm font-semibold tracking-wide transition-colors duration-200 mt-1 disabled:opacity-50"
+          disabled={loading}
         >
-          Sign In
+          {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 

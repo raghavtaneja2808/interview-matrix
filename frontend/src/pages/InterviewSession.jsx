@@ -234,9 +234,9 @@ const InterviewSession = () => {
               {SESSION.role} — {SESSION.company}
             </h1>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-[11px] font-black tracking-widest uppercase text-green-600">Live Analysis</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 border border-green-200">
+            <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+            <span className="text-[11px] font-black tracking-widest uppercase text-red-600">Recording</span>
           </div>
         </div>
 
