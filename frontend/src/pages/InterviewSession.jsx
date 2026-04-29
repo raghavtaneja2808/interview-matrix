@@ -58,24 +58,14 @@ const Waveform = ({ active }) => {
   return (
     <div className="flex items-center gap-[4px] h-12 w-full justify-center">
       {bars.map((h, i) => (
-        <div
-          key={i}
-          className="w-[5px] rounded-full"
-          style={{
-            height: `${h * 4}px`,
-            backgroundColor: "#e8621a",
-            opacity: active ? 1 : 0.3,
-            animation: active ? `pulse ${0.6 + (i % 4) * 0.15}s ease-in-out infinite alternate` : "none",
-            animationDelay: `${i * 0.05}s`,
-          }}
-        />
+        <div key={i} className="w-[5px] rounded-full" style={{
+          height: `${h * 4}px`, backgroundColor: "#e8621a",
+          opacity: active ? 1 : 0.3,
+          animation: active ? `wfpulse ${0.6 + (i % 4) * 0.15}s ease-in-out infinite alternate` : "none",
+          animationDelay: `${i * 0.05}s`,
+        }} />
       ))}
-      <style>{`
-        @keyframes pulse {
-          from { transform: scaleY(0.4); }
-          to   { transform: scaleY(1); }
-        }
-      `}</style>
+      <style>{`@keyframes wfpulse { from { transform: scaleY(0.4); } to { transform: scaleY(1); } }`}</style>
     </div>
   );
 };
