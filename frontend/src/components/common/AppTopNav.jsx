@@ -9,9 +9,8 @@ const BellIcon = () => (
 
 const NAV_ITEMS = [
   { to: "/dashboard", label: "Dashboard", end: true },
-  { to: "/review", label: "History" },
   { to: "/dashboard/interview", label: "Practice" },
-  { to: "/dashboard", label: "Resources" },
+  { to: "/dashboard/profile", label: "Profile" },
 ];
 
 const AppTopNav = () => {

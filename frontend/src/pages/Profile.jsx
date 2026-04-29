@@ -1,7 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import TopBar from "../components/dashboard/TopBar";
+import { useAuth } from "../context/AuthContext";
+import api, { apiError } from "../lib/api";
 
 const EyeIcon = ({ open }) =>
   open ? (
@@ -18,14 +20,13 @@ const EyeIcon = ({ open }) =>
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
+  const { user, updateUser, signOut } = useAuth();
 
-  // Name edit
-  const [name, setName] = useState("");
-  const [nameMsg, setNameMsg] = useState("");
-  const [nameLoading, setNameLoading] = useState(false);
+  const [name, setName] = useState(user?.name || "");
+  const [targetRole, setTargetRole] = useState(user?.targetRole || "Frontend Developer");
+  const [profileMsg, setProfileMsg] = useState("");
+  const [profileLoading, setProfileLoading] = useState(false);
 
-  // Password change
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [showCurrent, setShowCurrent] = useState(false);
@@ -33,44 +34,24 @@ const Profile = () => {
   const [pwMsg, setPwMsg] = useState("");
   const [pwLoading, setPwLoading] = useState(false);
 
-  useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem("user"));
-      if (!stored) {
-        navigate("/auth");
-        return;
-      }
-      setUser(stored);
-      setName(stored.name);
-    } catch {
-      navigate("/auth");
-    }
-  }, [navigate]);
-
-  const handleNameSave = async (e) => {
+  const handleProfileSave = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
-    setNameMsg("");
-    setNameLoading(true);
+    setProfileMsg("");
+    setProfileLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/update-name", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user.id, name: name.trim() }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setNameMsg(data.error || "Failed to update name.");
-        setNameLoading(false);
-        return;
+      if (name.trim() !== user.name) {
+        const { data } = await api.put("/auth/update-name", { name: name.trim() });
+        updateUser(data.user);
       }
-      localStorage.setItem("user", JSON.stringify(data.user));
-      setUser(data.user);
-      setNameMsg("Name updated successfully.");
-    } catch {
-      setNameMsg("Cannot connect to server.");
+      if (targetRole.trim() !== user.targetRole) {
+        const { data } = await api.put("/auth/update-target-role", { targetRole: targetRole.trim() });
+        updateUser(data.user);
+      }
+      setProfileMsg("Profile updated successfully.");
+    } catch (err) {
+      setProfileMsg(apiError(err, "Failed to update profile."));
     }
-    setNameLoading(false);
+    setProfileLoading(false);
   };
 
   const handlePasswordChange = async (e) => {
@@ -82,32 +63,21 @@ const Profile = () => {
     }
     setPwLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/change-password", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: user.id, currentPassword, newPassword }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setPwMsg(data.error || "Failed to change password.");
-        setPwLoading(false);
-        return;
-      }
+      await api.put("/auth/change-password", { currentPassword, newPassword });
       setPwMsg("Password changed successfully.");
       setCurrentPassword("");
       setNewPassword("");
-    } catch {
-      setPwMsg("Cannot connect to server.");
+    } catch (err) {
+      setPwMsg(apiError(err, "Failed to change password."));
     }
     setPwLoading(false);
   };
 
   const [loggingOut, setLoggingOut] = useState(false);
-
   const handleLogout = () => {
     setLoggingOut(true);
     setTimeout(() => {
-      localStorage.removeItem("user");
+      signOut();
       navigate("/");
     }, 600);
   };
@@ -138,7 +108,6 @@ const Profile = () => {
         <div className="flex-1 px-7 py-7 w-full max-w-3xl">
           <h1 className="text-[28px] font-black text-ink tracking-tight mb-8">Profile</h1>
 
-          {/* Avatar + Info */}
           <div className="flex items-center gap-5 mb-8">
             <div className="w-16 h-16 rounded-full bg-accent/10 text-accent text-xl font-black flex items-center justify-center">
               {initials}
@@ -149,10 +118,9 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Update Name */}
           <div className="bg-surface rounded-xl border border-border p-6 mb-5">
-            <h2 className="text-[16px] font-bold text-ink mb-4">Update Name</h2>
-            <form onSubmit={handleNameSave} className="flex flex-col gap-4">
+            <h2 className="text-[16px] font-bold text-ink mb-4">Account Details</h2>
+            <form onSubmit={handleProfileSave} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1.5">
                 <label className="text-sm font-medium text-ink-secondary">Full Name</label>
                 <input
@@ -163,22 +131,31 @@ const Profile = () => {
                   required
                 />
               </div>
-              {nameMsg && (
-                <p className={`text-sm ${nameMsg.includes("success") ? "text-green-600" : "text-red-600"}`}>
-                  {nameMsg}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium text-ink-secondary">Target Role</label>
+                <input
+                  type="text"
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  className="w-full h-11 px-4 rounded-lg border border-border bg-surface text-sm text-ink focus:outline-none focus:ring-2 focus:ring-accent/30 focus:border-accent transition-all"
+                  required
+                />
+              </div>
+              {profileMsg && (
+                <p className={`text-sm ${profileMsg.includes("success") ? "text-green-600" : "text-red-600"}`}>
+                  {profileMsg}
                 </p>
               )}
               <button
                 type="submit"
-                disabled={nameLoading}
+                disabled={profileLoading}
                 className="self-start h-10 px-6 rounded-lg bg-ink hover:bg-black text-white text-sm font-semibold transition-colors disabled:opacity-50"
               >
-                {nameLoading ? "Saving..." : "Save Name"}
+                {profileLoading ? "Saving..." : "Save Changes"}
               </button>
             </form>
           </div>
 
-          {/* Change Password */}
           <div className="bg-surface rounded-xl border border-border p-6 mb-5">
             <h2 className="text-[16px] font-bold text-ink mb-4">Change Password</h2>
             <form onSubmit={handlePasswordChange} className="flex flex-col gap-4">
@@ -238,7 +215,6 @@ const Profile = () => {
             </form>
           </div>
 
-          {/* Logout */}
           <div className="bg-surface rounded-xl border border-border p-6">
             <div className="flex items-center justify-between">
               <div>

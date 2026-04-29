@@ -1,19 +1,23 @@
 {
-  "name": "backend",
+  "name": "interview-matrix-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Express + MongoDB API for InterviewMatrix (JWT auth, Groq AI, ElevenLabs TTS).",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node --watch server.js"
   },
-  "keywords": [],
+  "keywords": ["interview", "ai", "groq", "elevenlabs", "mongodb"],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
-    "express": "^5.2.1"
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "groq-sdk": "^0.9.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "node-fetch": "^3.3.2"
   }
 }

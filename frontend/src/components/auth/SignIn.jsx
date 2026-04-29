@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { apiError } from "../../lib/api";
 
 const GoogleIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -37,27 +39,17 @@ const SignIn = ({ onSwitchToSignUp }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Sign in failed.");
-        setLoading(false);
-        return;
-      }
-      localStorage.setItem("user", JSON.stringify(data.user));
+      await signIn(email, password);
       navigate("/dashboard");
-    } catch {
-      setError("Cannot connect to server.");
+    } catch (err) {
+      setError(apiError(err, "Sign in failed."));
       setLoading(false);
     }
   };

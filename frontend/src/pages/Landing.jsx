@@ -8,16 +8,15 @@ import Comparison from "../components/landing/Comparison";
 import LogoCloud from "../components/landing/LogoCloud";
 import Toolkit from "../components/landing/Toolkit";
 import FAQ from "../components/landing/FAQ";
+import { useAuth } from "../context/AuthContext";
 
 const Landing = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    try {
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user?.id) navigate("/dashboard", { replace: true });
-    } catch { /* not logged in */ }
-  }, [navigate]);
+    if (user?.id) navigate("/dashboard", { replace: true });
+  }, [user, navigate]);
 
   return (
     <div className="font-sans antialiased relative selection:bg-primary/20 selection:text-primary">

@@ -2,7 +2,15 @@
   "permissions": {
     "allow": [
       "Bash(npm install:*)",
-      "Bash(timeout 5 node server.js)"
+      "Bash(timeout 5 node server.js)",
+      "Bash(rm -f package-lock.json)",
+      "Bash(rm -rf node_modules)",
+      "Bash(npm run *)",
+      "Bash(node -e \"require\\('./routes/authRoutes'\\); require\\('./routes/interviewRoutes'\\); require\\('./routes/profileRoutes'\\); console.log\\('OK'\\)\")",
+      "Bash(node -e \"require\\('./services/groq'\\); require\\('./services/elevenlabs'\\); console.log\\('OK'\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"require\\('./routes/interviewRoutes'\\); require\\('./services/groqStt'\\); console.log\\('OK'\\)\")",
+      "Bash(npx vite *)"
     ]
   }
 }

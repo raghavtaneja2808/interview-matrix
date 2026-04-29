@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/dashboard/Sidebar";
 import TopBar from "../components/dashboard/TopBar";
+import api, { apiError } from "../lib/api";
 
 /* ══════════════════════════════════════════════════
    ICONS
@@ -129,9 +130,28 @@ const StartInterview = () => {
   const [selectedType,       setSelectedType]       = useState("technical");
   const [selectedDuration,   setSelectedDuration]   = useState("30");
   const [selectedDifficulty, setSelectedDifficulty] = useState("mid");
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState("");
 
   const role       = ROLES.find((r) => r.id === selectedRole);
   const difficulty = DIFFICULTIES.find((d) => d.id === selectedDifficulty);
+
+  const handleStart = async () => {
+    setError("");
+    setCreating(true);
+    try {
+      const { data } = await api.post("/interviews", {
+        role: selectedRole,
+        type: selectedType,
+        duration: parseInt(selectedDuration, 10),
+        difficulty: selectedDifficulty,
+      });
+      navigate(`/dashboard/session/${data.interview._id}`);
+    } catch (err) {
+      setError(apiError(err, "Could not start interview."));
+      setCreating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-surface-muted">
@@ -224,16 +244,21 @@ const StartInterview = () => {
                   </div>
                 </div>
                 <button
-                  onClick={() => navigate("/dashboard/session")}
-                  className="flex-shrink-0 h-12 px-7 rounded-xl bg-accent hover:bg-accent-dark text-white text-[14px] font-black tracking-wide transition-colors duration-200 shadow-sm"
+                  onClick={handleStart}
+                  disabled={creating}
+                  className="flex-shrink-0 h-12 px-7 rounded-xl bg-accent hover:bg-accent-dark text-white text-[14px] font-black tracking-wide transition-colors duration-200 shadow-sm disabled:opacity-60"
                 >
-                  Start<br />Interview
+                  {creating ? "Starting…" : <>Start<br />Interview</>}
                 </button>
               </div>
 
+              {error && (
+                <div className="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">{error}</div>
+              )}
+
               <div className="flex items-start gap-2.5 px-1">
                 <span className="flex-shrink-0 mt-0.5"><InfoIcon /></span>
-                <p className="text-[12px] text-ink-muted italic leading-relaxed">"Make sure your microphone and camera are working. We'll provide real-time feedback on your communication style and technical accuracy."</p>
+                <p className="text-[12px] text-ink-muted italic leading-relaxed">"Make sure your microphone is working. The AI interviewer will speak each question aloud and listen to your spoken answer."</p>
               </div>
             </div>
           </div>
