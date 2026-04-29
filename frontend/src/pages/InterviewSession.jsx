@@ -123,17 +123,91 @@ const InterviewSession = () => {
   const speakQuestion = useCallback(async (text) => {
     setAiSpeaking(true);
     try {
-      const res = await api.post("/interviews/tts", { text }, { responseType: "blob" });
-      const url = URL.createObjectURL(res.data);
-      if (audioRef.current) {
-        audioRef.current.src = url;
-        audioRef.current.onended = () => {
+      const token = localStorage.getItem("token");
+      const baseURL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+      // Use raw fetch (not axios) so we can access the response body as a ReadableStream.
+      const fetchRes = await fetch(`${baseURL}/interviews/tts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!fetchRes.ok) throw new Error("TTS request failed");
+
+      const audio = audioRef.current;
+      if (!audio) throw new Error("No audio element");
+
+      // — Fast path: MediaSource streaming —
+      // Audio starts playing after the very first chunk arrives instead of
+      // waiting for the entire file to download (~600 ms head-start).
+      if (window.MediaSource && MediaSource.isTypeSupported("audio/mpeg")) {
+        const mediaSource = new MediaSource();
+        const objectURL = URL.createObjectURL(mediaSource);
+        audio.src = objectURL;
+        audio.onended = () => {
           setAiSpeaking(false);
-          URL.revokeObjectURL(url);
+          URL.revokeObjectURL(objectURL);
         };
-        await audioRef.current.play().catch(() => setAiSpeaking(false));
+
+        await new Promise((resolve, reject) => {
+          mediaSource.addEventListener("sourceopen", async () => {
+            try {
+              const sourceBuffer = mediaSource.addSourceBuffer("audio/mpeg");
+              const reader = fetchRes.body.getReader();
+              let startedPlaying = false;
+
+              // Append a chunk and wait until the SourceBuffer has finished updating.
+              const appendChunk = (chunk) =>
+                new Promise((res) => {
+                  const doAppend = () => {
+                    sourceBuffer.appendBuffer(chunk);
+                    sourceBuffer.addEventListener("updateend", res, { once: true });
+                  };
+                  if (sourceBuffer.updating) {
+                    sourceBuffer.addEventListener("updateend", doAppend, { once: true });
+                  } else {
+                    doAppend();
+                  }
+                });
+
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) {
+                  const endStream = () => { try { mediaSource.endOfStream(); } catch {} };
+                  if (sourceBuffer.updating) {
+                    sourceBuffer.addEventListener("updateend", endStream, { once: true });
+                  } else {
+                    endStream();
+                  }
+                  break;
+                }
+                await appendChunk(value);
+                // Kick off playback as soon as the browser has enough data.
+                if (!startedPlaying && audio.readyState >= 2) {
+                  startedPlaying = true;
+                  audio.play().catch(() => {});
+                }
+              }
+              resolve();
+            } catch (err) { reject(err); }
+          }, { once: true });
+        });
+
+        // Safety net: if we never started playing, try now.
+        if (audio.paused) {
+          await audio.play().catch(() => setAiSpeaking(false));
+        }
       } else {
-        setAiSpeaking(false);
+        // Fallback for browsers without MSE MP3 support: buffer then play.
+        const blob = await fetchRes.blob();
+        const url = URL.createObjectURL(blob);
+        audio.src = url;
+        audio.onended = () => { setAiSpeaking(false); URL.revokeObjectURL(url); };
+        await audio.play().catch(() => setAiSpeaking(false));
       }
     } catch {
       setAiSpeaking(false);
@@ -216,16 +290,18 @@ const InterviewSession = () => {
     setSubmittingAnswer(true);
     setError("");
     try {
-      const { data } = await api.post(`/interviews/${id}/answer`, { answer: text });
-      console.log("[submit] saved");
+      // Single combined request: saves the answer AND generates the next question
+      // server-side in one round-trip, eliminating the old two-step HTTP flow.
+      const { data } = await api.post(`/interviews/${id}/answer-and-next`, { answer: text });
+      console.log("[submit] saved + next question received");
       setInterview(data.interview);
       setResponse("");
 
-      const remaining = data.interview.totalQuestions - data.interview.turns.length;
-      if (remaining <= 0) {
+      if (data.done) {
         await endSession();
       } else {
-        await askNextRef.current?.();
+        // Next question is already in our hands — fire TTS immediately.
+        speakQuestion(data.question);
       }
     } catch (err) {
       console.error("[submit] failed:", err);

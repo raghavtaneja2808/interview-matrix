@@ -2,7 +2,8 @@ const express = require("express");
 const Interview = require("../models/Interview");
 const { requireAuth } = require("../middleware/auth");
 const { generateNextQuestion, generateReview } = require("../services/groq");
-const { synthesize } = require("../services/elevenlabs");
+const { Readable } = require("stream");
+const { synthesize, synthesizeStream } = require("../services/elevenlabs");
 const { transcribe } = require("../services/groqStt");
 
 const router = express.Router();
@@ -92,6 +93,48 @@ router.post("/:id/next-question", async (req, res) => {
   }
 });
 
+// ── Submit answer AND fetch next question in one round-trip ────────
+// This is the fast path: saves answer + calls Groq + returns both
+// in a single request instead of two sequential HTTP calls.
+router.post("/:id/answer-and-next", async (req, res) => {
+  try {
+    const { answer } = req.body || {};
+    const interview = await Interview.findOne({ _id: req.params.id, userId: req.user._id });
+    if (!interview) return res.status(404).json({ error: "Interview not found." });
+    if (interview.status !== "in_progress") {
+      return res.status(400).json({ error: "Interview is no longer active." });
+    }
+    const turn = interview.turns[interview.turns.length - 1];
+    if (!turn) return res.status(400).json({ error: "No question to answer." });
+    if (turn.answer) return res.status(400).json({ error: "This question has already been answered." });
+
+    // 1. Save the answer.
+    turn.answer = (answer || "").toString().trim();
+    turn.answeredAt = new Date();
+    await interview.save();
+
+    // 2. Check if the interview is done.
+    const remaining = interview.totalQuestions - interview.turns.length;
+    if (remaining <= 0) {
+      return res.json({ interview, question: null, done: true });
+    }
+
+    // 3. Generate next question (Groq) — happens server-side in the same request.
+    const question = await generateNextQuestion(interview);
+    interview.turns.push({
+      index: interview.turns.length + 1,
+      question,
+      askedAt: new Date(),
+    });
+    await interview.save();
+
+    res.json({ interview, question, done: false });
+  } catch (err) {
+    console.error("[interview/answer-and-next]", err);
+    res.status(500).json({ error: "Could not process answer." });
+  }
+});
+
 // ── Submit an answer ────────────────────────────────────────────────
 router.post("/:id/answer", async (req, res) => {
   try {
@@ -171,20 +214,32 @@ router.post(
   }
 );
 
-// ── Text-to-Speech (ElevenLabs) ─────────────────────────────────────
+// ── Text-to-Speech (ElevenLabs) — streamed, no backend buffering ────
 router.post("/tts", async (req, res) => {
   try {
     const { text } = req.body || {};
     if (!text || !text.trim()) return res.status(400).json({ error: "text is required" });
     if (text.length > 2000) return res.status(400).json({ error: "text too long" });
 
-    const audio = await synthesize(text.trim());
+    // synthesizeStream() calls the ElevenLabs /stream endpoint and returns the
+    // raw fetch Response. We pipe its body straight to the client so the browser
+    // receives audio chunks as they arrive — no waiting for the full file.
+    const elevenRes = await synthesizeStream(text.trim());
+
     res.set("Content-Type", "audio/mpeg");
+    res.set("Transfer-Encoding", "chunked");
     res.set("Cache-Control", "no-store");
-    res.send(audio);
+
+    // Convert the WHATWG ReadableStream (from fetch) to a Node.js Readable
+    // then pipe it into the Express response.
+    const nodeStream = Readable.fromWeb(elevenRes.body);
+    nodeStream.pipe(res);
+
+    // If the client disconnects early, destroy the upstream stream.
+    req.on("close", () => nodeStream.destroy());
   } catch (err) {
     console.error("[interview/tts]", err.message);
-    res.status(502).json({ error: "Voice synthesis failed." });
+    if (!res.headersSent) res.status(502).json({ error: "Voice synthesis failed." });
   }
 });
 
