@@ -10,7 +10,14 @@
       "Bash(node -e \"require\\('./services/groq'\\); require\\('./services/elevenlabs'\\); console.log\\('OK'\\)\")",
       "Bash(node -e ' *)",
       "Bash(node -e \"require\\('./routes/interviewRoutes'\\); require\\('./services/groqStt'\\); console.log\\('OK'\\)\")",
-      "Bash(npx vite *)"
+      "Bash(npx vite *)",
+      "Bash(git rm *)",
+      "Bash(git -c core.editor=true commit --no-edit)",
+      "Bash(where msedge *)",
+      "Bash(where chrome *)",
+      "Bash(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\" --version)",
+      "Bash(\"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\" --version)",
+      "PowerShell($paths = @\\(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\",\"C:\\\\Program Files\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\",\"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\",\"C:\\\\Program Files \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\"\\); foreach\\($p in $paths\\){ if\\(Test-Path $p\\){ Write-Output $p } })"
     ]
   }
 }

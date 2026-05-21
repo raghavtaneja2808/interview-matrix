@@ -7,7 +7,13 @@
     "start": "node server.js",
     "dev": "node --watch server.js"
   },
-  "keywords": ["interview", "ai", "groq", "elevenlabs", "mongodb"],
+  "keywords": [
+    "interview",
+    "ai",
+    "groq",
+    "elevenlabs",
+    "mongodb"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -18,6 +24,8 @@
     "groq-sdk": "^0.9.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0"
   }
 }

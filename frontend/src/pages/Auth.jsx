@@ -37,8 +37,27 @@ const StarIcon = () => (
 
 const Auth = () => {
   const [activeTab, setActiveTab] = useState("signin");
+  const [oauthError, setOauthError] = useState("");
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, consumeToken } = useAuth();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    const error = params.get("error");
+
+    if (token) {
+      window.history.replaceState({}, "", "/auth");
+      consumeToken(token)
+        .then(() => navigate("/dashboard", { replace: true }))
+        .catch(() => setOauthError("Google sign-in failed. Please try again."));
+      return;
+    }
+    if (error) {
+      window.history.replaceState({}, "", "/auth");
+      setOauthError("Google sign-in was cancelled or failed.");
+    }
+  }, [consumeToken, navigate]);
 
   useEffect(() => {
     if (user?.id) navigate("/dashboard", { replace: true });
@@ -137,6 +156,11 @@ const Auth = () => {
 
             {/* Form area */}
             <div className="flex-1 px-8 py-8 overflow-y-auto">
+              {oauthError && (
+                <div className="mb-4 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm">
+                  {oauthError}
+                </div>
+              )}
               {activeTab === "signin" ? (
                 <SignIn onSwitchToSignUp={() => setActiveTab("signup")} />
               ) : (

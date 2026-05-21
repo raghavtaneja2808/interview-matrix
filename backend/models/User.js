@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
       index: true,
     },
     password: { type: String, required: true, select: false },
+    googleId: { type: String, index: true, sparse: true },
     targetRole: { type: String, default: "Frontend Developer" },
   },
   { timestamps: true }

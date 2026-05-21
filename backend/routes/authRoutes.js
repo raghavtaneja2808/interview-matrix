@@ -1,9 +1,30 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const passport = require("../config/passport");
 const User = require("../models/User");
 const { signToken, requireAuth } = require("../middleware/auth");
 
 const router = express.Router();
+
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"], session: false })
+);
+
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session: false, failureRedirect: redirectWithError("google_failed") }),
+  (req, res) => {
+    const token = signToken(req.user._id);
+    const base = (process.env.CLIENT_ORIGIN || "http://localhost:5173").split(",")[0];
+    res.redirect(`${base}/auth?token=${encodeURIComponent(token)}`);
+  }
+);
+
+function redirectWithError(code) {
+  const base = (process.env.CLIENT_ORIGIN || "http://localhost:5173").split(",")[0];
+  return `${base}/auth?error=${encodeURIComponent(code)}`;
+}
 
 router.post("/signup", async (req, res) => {
   try {

@@ -154,7 +154,14 @@ const SignIn = ({ onSwitchToSignUp }) => {
 
       {/* Social */}
       <div className="grid grid-cols-2 gap-3">
-        <button className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-border bg-surface hover:bg-surface-muted text-sm font-medium text-ink-secondary transition-colors duration-200">
+        <button
+          type="button"
+          onClick={() => {
+            const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+            window.location.href = `${apiBase}/auth/google`;
+          }}
+          className="flex items-center justify-center gap-2.5 h-11 rounded-lg border border-border bg-surface hover:bg-surface-muted text-sm font-medium text-ink-secondary transition-colors duration-200"
+        >
           <GoogleIcon />
           Google
         </button>

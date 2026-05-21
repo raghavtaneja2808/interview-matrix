@@ -51,6 +51,13 @@ export function AuthProvider({ children }) {
     return data.user;
   }, [persist]);
 
+  const consumeToken = useCallback(async (token) => {
+    localStorage.setItem("token", token);
+    const { data } = await api.get("/auth/me");
+    persist(data.user, token);
+    return data.user;
+  }, [persist]);
+
   const signOut = useCallback(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -63,7 +70,7 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, updateUser }}>
+    <AuthContext.Provider value={{ user, loading, signIn, signUp, signOut, updateUser, consumeToken }}>
       {children}
     </AuthContext.Provider>
   );

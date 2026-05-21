@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const passport = require("./config/passport");
 
 const authRoutes = require("./routes/authRoutes");
 const interviewRoutes = require("./routes/interviewRoutes");
@@ -17,6 +18,7 @@ app.use(
   })
 );
 app.use(express.json({ limit: "1mb" }));
+app.use(passport.initialize());
 
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, time: new Date().toISOString() });
